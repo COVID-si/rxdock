@@ -127,7 +127,7 @@ RbtPrincipalAxes Rbt::GetPrincipalAxes(const RbtAtomList &atomList) {
     inertiaTensor(2, 1) -= dIyz;
   }
 
-  Eigen::EigenSolver<Eigen::MatrixXd> eigenSolver(inertiaTensor);
+  Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigenSolver(inertiaTensor);
   eigenSolver.compute(inertiaTensor);
   Eigen::VectorXd eigenValues = eigenSolver.eigenvalues().real();
   Eigen::MatrixXd eigenVectors = eigenSolver.eigenvectors().real();
@@ -230,7 +230,7 @@ RbtPrincipalAxes Rbt::GetPrincipalAxes(const RbtCoordList &coordList) {
     inertiaTensor(2, 1) -= dIyz;
   }
 
-  Eigen::EigenSolver<Eigen::MatrixXd> eigenSolver(inertiaTensor);
+  Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigenSolver(inertiaTensor);
   eigenSolver.compute(inertiaTensor);
   Eigen::VectorXd eigenValues = eigenSolver.eigenvalues().real();
   Eigen::MatrixXd eigenVectors = eigenSolver.eigenvectors().real();

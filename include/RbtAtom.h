@@ -67,12 +67,14 @@ public:
 
   // Constructor supplying all 2-D parameters
   RBTDLL_EXPORT
-  RbtAtom(int nAtomId, int nAtomicNo = 6, std::string strAtomName = "C",
-          std::string strSubunitId = "1", std::string strSubunitName = "RES",
-          std::string strSegmentName = "SEG1",
-          eHybridState eState =
-              UNDEFINED, // DM 8 Dec 1998 Changed from SP3 to UNDEFINED
-          unsigned int nHydrogens = 0, int nFormalCharge = 0);
+  explicit RbtAtom(int nAtomId, int nAtomicNo = 6,
+                   std::string strAtomName = "C",
+                   std::string strSubunitId = "1",
+                   std::string strSubunitName = "RES",
+                   std::string strSegmentName = "SEG1",
+                   eHybridState eState =
+                       UNDEFINED, // DM 8 Dec 1998 Changed from SP3 to UNDEFINED
+                   unsigned int nHydrogens = 0, int nFormalCharge = 0);
 
   // Default destructor
   virtual ~RbtAtom();
@@ -117,7 +119,7 @@ public:
 
   // AtomName
   std::string GetName() const { return m_strAtomName; }
-  void SetAtomName(const std::string strAtomName) {
+  void SetAtomName(const std::string &strAtomName) {
     m_strAtomName = strAtomName;
   }
   RBTDLL_EXPORT std::string
@@ -126,19 +128,19 @@ public:
 
   // SubunitId
   std::string GetSubunitId() const { return m_strSubunitId; }
-  void SetSubunitId(const std::string strSubunitId) {
+  void SetSubunitId(const std::string &strSubunitId) {
     m_strSubunitId = strSubunitId;
   }
 
   // SubunitName
   std::string GetSubunitName() const { return m_strSubunitName; }
-  void SetSubunitName(const std::string strSubunitName) {
+  void SetSubunitName(const std::string &strSubunitName) {
     m_strSubunitName = strSubunitName;
   }
 
   // SegmentName
   std::string GetSegmentName() const { return m_strSegmentName; }
-  void SetSegmentName(const std::string strSegmentName) {
+  void SetSegmentName(const std::string &strSegmentName) {
     m_strSegmentName = strSegmentName;
   }
 
@@ -420,30 +422,30 @@ std::string ConvertFormalChargeToString(int nCharge);
 // regular pointers
 
 // Is atom enabled ?
-class isAtomEnabled : public std::unary_function<RbtAtom *, bool> {
+class isAtomEnabled : public std::function<bool(RbtAtom *)> {
 public:
-  explicit isAtomEnabled() {}
+  explicit isAtomEnabled() = default;
   bool operator()(RbtAtom *pAtom) const { return pAtom->GetEnabled(); }
 };
 
 // Is atom selected ?
-class isAtomSelected : public std::unary_function<RbtAtom *, bool> {
+class isAtomSelected : public std::function<bool(RbtAtom *)> {
 public:
-  explicit isAtomSelected() {}
+  explicit isAtomSelected() = default;
   bool operator()(RbtAtom *pAtom) const { return pAtom->GetSelectionFlag(); }
 };
 
 // Is atom cyclic ?
-class isAtomCyclic : public std::unary_function<RbtAtom *, bool> {
+class isAtomCyclic : public std::function<bool(RbtAtom *)> {
 public:
-  explicit isAtomCyclic() {}
+  explicit isAtomCyclic() = default;
   bool operator()(const RbtAtom *pAtom) const { return pAtom->GetCyclicFlag(); }
 };
 
 // DM 9 Feb 2000 - is atom bridgehead? Checks for >2 cyclic bonds
-class isAtomBridgehead : public std::unary_function<RbtAtom *, bool> {
+class isAtomBridgehead : public std::function<bool(RbtAtom *)> {
 public:
-  explicit isAtomBridgehead() {}
+  explicit isAtomBridgehead() = default;
   bool operator()(const RbtAtom *pAtom) const {
     return (pAtom->GetNumCyclicBonds() > 2);
   }
@@ -451,26 +453,26 @@ public:
 
 // Is atom a H-Bond Acceptor ?
 // Checks atomic number for O(8), N(7) or S(16)
-class isAtomHBondAcceptor : public std::unary_function<RbtAtom *, bool> {
+class isAtomHBondAcceptor : public std::function<bool(RbtAtom *)> {
 public:
-  explicit isAtomHBondAcceptor() {}
+  explicit isAtomHBondAcceptor() = default;
   RBTDLL_EXPORT bool operator()(const RbtAtom *) const;
 };
 
 // Is atom a H-Bond Donor ?
 // Checks 1) is it a hydrogen, 2) does it make exactly one bond, 3) is the bond
 // to O, N or S ?
-class isAtomHBondDonor : public std::unary_function<RbtAtom *, bool> {
+class isAtomHBondDonor : public std::function<bool(RbtAtom *)> {
 public:
-  explicit isAtomHBondDonor() {}
+  explicit isAtomHBondDonor() = default;
   RBTDLL_EXPORT bool operator()(const RbtAtom *) const;
 };
 
 // Is atom formally charged ?
 // Checks if formal charge is != zero
-class isAtomCharged : public std::unary_function<RbtAtom *, bool> {
+class isAtomCharged : public std::function<bool(RbtAtom *)> {
 public:
-  explicit isAtomCharged() {}
+  explicit isAtomCharged() = default;
   bool operator()(const RbtAtom *pAtom) const {
     return (pAtom->GetFormalCharge() != 0);
   }
@@ -478,9 +480,9 @@ public:
 
 // Is atom formally positively charged ?
 // Checks if formal charge is > zero
-class isAtomPosCharged : public std::unary_function<RbtAtom *, bool> {
+class isAtomPosCharged : public std::function<bool(RbtAtom *)> {
 public:
-  explicit isAtomPosCharged() {}
+  explicit isAtomPosCharged() = default;
   bool operator()(const RbtAtom *pAtom) const {
     return (pAtom->GetFormalCharge() > 0);
   }
@@ -488,18 +490,18 @@ public:
 
 // Is atom formally negatively charged ?
 // Checks if formal charge is < zero
-class isAtomNegCharged : public std::unary_function<RbtAtom *, bool> {
+class isAtomNegCharged : public std::function<bool(RbtAtom *)> {
 public:
-  explicit isAtomNegCharged() {}
+  explicit isAtomNegCharged() = default;
   bool operator()(const RbtAtom *pAtom) const {
     return (pAtom->GetFormalCharge() < 0);
   }
 };
 
 // Does atom have implicit hydrogens
-class isAtomExtended : public std::unary_function<RbtAtom *, bool> {
+class isAtomExtended : public std::function<bool(RbtAtom *)> {
 public:
-  explicit isAtomExtended() {}
+  explicit isAtomExtended() = default;
   bool operator()(const RbtAtom *pAtom) const {
     return (pAtom->GetNumImplicitHydrogens() > 0);
   }
@@ -508,22 +510,22 @@ public:
 // Is atom planar ?
 // Checks if 1) atom makes 2 bonds (in which case must be planar) or
 // 2) hybridisation state is SP2, AROM or TRI
-class isAtomPlanar : public std::unary_function<RbtAtom *, bool> {
+class isAtomPlanar : public std::function<bool(RbtAtom *)> {
 public:
-  explicit isAtomPlanar() {}
+  explicit isAtomPlanar() = default;
   bool operator()(const RbtAtom *) const;
 };
 
 // Is atom a pi-atom ?
 // SP2,TRI or AROM, or special case of OSP3
-class isPiAtom : public std::unary_function<RbtAtom *, bool> {
+class isPiAtom : public std::function<bool(RbtAtom *)> {
 public:
-  explicit isPiAtom() {}
+  explicit isPiAtom() = default;
   RBTDLL_EXPORT bool operator()(const RbtAtom *) const;
 };
 
 // Is atomic number equal to n ?
-class isAtomicNo_eq : public std::unary_function<RbtAtom *, bool> {
+class isAtomicNo_eq : public std::function<bool(RbtAtom *)> {
   int n;
 
 public:
@@ -534,60 +536,60 @@ public:
 };
 
 // Is Force field type equal to s ?
-class isFFType_eq : public std::unary_function<RbtAtom *, bool> {
+class isFFType_eq : public std::function<bool(RbtAtom *)> {
   std::string s;
 
 public:
-  explicit isFFType_eq(const std::string &ss) : s(ss) {}
+  explicit isFFType_eq(std::string ss) : s(std::move(ss)) {}
   bool operator()(const RbtAtom *pAtom) const {
     return pAtom->GetFFType() == s;
   }
 };
 
 // Is Atom name equal to s ?
-class isAtomName_eq : public std::unary_function<RbtAtom *, bool> {
+class isAtomName_eq : public std::function<bool(RbtAtom *)> {
   std::string s;
 
 public:
-  explicit isAtomName_eq(const std::string &ss) : s(ss) {}
+  explicit isAtomName_eq(std::string ss) : s(std::move(ss)) {}
   bool operator()(const RbtAtom *pAtom) const { return pAtom->GetName() == s; }
 };
 
 // Is Subunit name equal to s ?
-class isSubunitName_eq : public std::unary_function<RbtAtom *, bool> {
+class isSubunitName_eq : public std::function<bool(RbtAtom *)> {
   std::string s;
 
 public:
-  explicit isSubunitName_eq(const std::string &ss) : s(ss) {}
+  explicit isSubunitName_eq(std::string ss) : s(std::move(ss)) {}
   bool operator()(const RbtAtom *pAtom) const {
     return pAtom->GetSubunitName() == s;
   }
 };
 
 // Is Subunit ID equal to s ?
-class isSubunitId_eq : public std::unary_function<RbtAtom *, bool> {
+class isSubunitId_eq : public std::function<bool(RbtAtom *)> {
   std::string s;
 
 public:
-  explicit isSubunitId_eq(const std::string &ss) : s(ss) {}
+  explicit isSubunitId_eq(std::string ss) : s(std::move(ss)) {}
   bool operator()(const RbtAtom *pAtom) const {
     return pAtom->GetSubunitId() == s;
   }
 };
 
 // Is Segment name equal to s ?
-class isSegmentName_eq : public std::unary_function<RbtAtom *, bool> {
+class isSegmentName_eq : public std::function<bool(RbtAtom *)> {
   std::string s;
 
 public:
-  explicit isSegmentName_eq(const std::string &ss) : s(ss) {}
+  explicit isSegmentName_eq(std::string ss) : s(std::move(ss)) {}
   bool operator()(const RbtAtom *pAtom) const {
     return pAtom->GetSegmentName() == s;
   }
 };
 
 // Is hybridisation state equal to e ? (DM 26 Mar 1999)
-class isHybridState_eq : public std::unary_function<RbtAtom *, bool> {
+class isHybridState_eq : public std::function<bool(RbtAtom *)> {
   RbtAtom::eHybridState e;
 
 public:
@@ -601,9 +603,9 @@ public:
 // Is atom2 equal to atom1 (checks if underlying regular pointers match)
 // Note: this is a binary rather than unary predicate
 // DM 1 Feb 1999 - renamed from isAtom_eq to isAtomPtr_eq
-class isAtomPtr_eq : public std::binary_function<RbtAtom *, RbtAtom *, bool> {
+class isAtomPtr_eq : public std::function<bool(RbtAtom *, RbtAtom *)> {
 public:
-  explicit isAtomPtr_eq() {}
+  explicit isAtomPtr_eq() = default;
   bool operator()(const RbtAtom *pAtom1, const RbtAtom *pAtom2) const {
     return pAtom1 == pAtom2;
   }
@@ -612,9 +614,9 @@ public:
 // DM 1 Feb 1999
 // Is atom2 equal to atom1 (checks if subunit name, subunit ID and atom name
 // match) Note: this is a binary rather than unary predicate
-class isAtom_eq : public std::binary_function<RbtAtom *, RbtAtom *, bool> {
+class isAtom_eq : public std::function<bool(RbtAtom *, RbtAtom *)> {
 public:
-  explicit isAtom_eq() {}
+  explicit isAtom_eq() = default;
   bool operator()(const RbtAtom *pAtom1, const RbtAtom *pAtom2) const {
     return ((pAtom1->GetSubunitId() == pAtom2->GetSubunitId()) &&
             (pAtom1->GetSubunitName() == pAtom2->GetSubunitName()) &&
@@ -625,9 +627,9 @@ public:
 // DM 22 Apr 2002
 // Is atom2 ID equal to atom1 ID
 // Note: this is a binary rather than unary predicate
-class isAtomId_eq : public std::binary_function<RbtAtom *, RbtAtom *, bool> {
+class isAtomId_eq : public std::function<bool(RbtAtom *, RbtAtom *)> {
 public:
-  explicit isAtomId_eq() {}
+  explicit isAtomId_eq() = default;
   bool operator()(const RbtAtom *pAtom1, const RbtAtom *pAtom2) const {
     return (pAtom1->GetAtomId() == pAtom2->GetAtomId());
   }
@@ -635,7 +637,7 @@ public:
 
 // DM 12 Apr 1999
 // Is atom inside a sphere defined by radius=r, center=c
-class isAtomInsideSphere : public std::unary_function<RbtAtom *, bool> {
+class isAtomInsideSphere : public std::function<bool(RbtAtom *)> {
   const RbtCoord &c; // center of sphere
   double r2;         // radius squared (to avoid taking square roots)
 public:
@@ -648,7 +650,7 @@ public:
 
 // DM 12 Apr 1999
 // Is atom within a cuboid defined by cmin,cmax coords?
-class isAtomInsideCuboid : public std::unary_function<RbtAtom *, bool> {
+class isAtomInsideCuboid : public std::function<bool(RbtAtom *)> {
   const RbtCoord &cmin;
   const RbtCoord &cmax;
 
@@ -664,7 +666,7 @@ public:
 
 // DM 29 Jul 1999
 // Is atom within a given distance of any coord in the coord list
-class isAtomNearCoordList : public std::unary_function<RbtAtom *, bool> {
+class isAtomNearCoordList : public std::function<bool(RbtAtom *)> {
   const RbtCoordList &cl;
   double r2; // radius squared (to avoid taking square roots)
 public:
@@ -674,7 +676,7 @@ public:
 };
 
 // Is atom2 1-2 connected (i.e. bonded) to atom1 ?
-class isAtom_12Connected : public std::unary_function<RbtAtom *, bool> {
+class isAtom_12Connected : public std::function<bool(RbtAtom *)> {
   RbtAtom *pAtom1;
   RbtAtomList bondedAtomList1;
 
@@ -684,7 +686,7 @@ public:
 };
 
 // Is atom2 1-3 connected (i.e. via a bond angle) to atom1 ?
-class isAtom_13Connected : public std::unary_function<RbtAtom *, bool> {
+class isAtom_13Connected : public std::function<bool(RbtAtom *)> {
   RbtAtom *pAtom1;
   RbtAtomList bondedAtomList1;
 
@@ -694,9 +696,9 @@ public:
 };
 
 // Is atom's subunit an RNA-type (i.e. A,G,C or U)
-class isAtomRNA : public std::unary_function<RbtAtom *, bool> {
+class isAtomRNA : public std::function<bool(RbtAtom *)> {
 public:
-  explicit isAtomRNA() {}
+  explicit isAtomRNA() = default;
   bool operator()(const RbtAtom *) const;
 };
 
@@ -704,7 +706,7 @@ public:
 // For our purposes, these are N7,O2,O4,O6,O1P and O2P
 // DM 22 Dec 1998 - center phosphate interactions on the P atom, not on O1P and
 // O2P to avoid double counting of favourable interactions class
-// isAtomRNAAnionic : public std::unary_function<RbtAtomPtr,RbtBool> {
+// isAtomRNAAnionic : public std::function<bool(RbtAtom *)>  {
 //  isAtomRNA bIsAtomRNA;
 // public:
 //  explicit isAtomRNAAnionic() {}
@@ -716,7 +718,7 @@ public:
 //
 // Is atom classified as a ligand "anionic" atom
 // Includes COO-, PO3-
-// class isAtomLigandAnionic : public std::unary_function<RbtAtomPtr,RbtBool> {
+// class isAtomLigandAnionic : public std::function<bool(RbtAtom *)>  {
 // public:
 //  explicit isAtomLigandAnionic() {}
 //  RbtBool operator() (RbtAtomPtr) const;
@@ -726,7 +728,7 @@ public:
 //
 // Is atom classified as a ligand "cationic" atom
 // The most important category is charged Nitrogens
-// class isAtomLigandCationic : public std::unary_function<RbtAtomPtr,RbtBool> {
+// class isAtomLigandCationic : public std::function<bool(RbtAtom *)>  {
 // public:
 //  explicit isAtomLigandCationic() {}
 //  RbtBool operator() (RbtAtomPtr) const;
@@ -740,9 +742,9 @@ public:
 
 // Is atom defined as an ionic interaction center ?
 // Checks if group charge is != zero
-class isAtomIonic : public std::unary_function<RbtAtom *, bool> {
+class isAtomIonic : public std::function<bool(RbtAtom *)> {
 public:
-  explicit isAtomIonic() {}
+  explicit isAtomIonic() = default;
   bool operator()(const RbtAtom *pAtom) const {
     return (std::fabs(pAtom->GetGroupCharge()) > 0.001);
   }
@@ -750,9 +752,9 @@ public:
 
 // Is atom defined as a cationic interaction center ?
 // Checks if group charge is > zero
-class isAtomCationic : public std::unary_function<RbtAtom *, bool> {
+class isAtomCationic : public std::function<bool(RbtAtom *)> {
 public:
-  explicit isAtomCationic() {}
+  explicit isAtomCationic() = default;
   bool operator()(const RbtAtom *pAtom) const {
     return (pAtom->GetGroupCharge() > 0.001);
   }
@@ -760,9 +762,9 @@ public:
 
 // Is atom defined as an anionic interaction center ?
 // Checks if group charge is < zero
-class isAtomAnionic : public std::unary_function<RbtAtom *, bool> {
+class isAtomAnionic : public std::function<bool(RbtAtom *)> {
 public:
-  explicit isAtomAnionic() {}
+  explicit isAtomAnionic() = default;
   bool operator()(const RbtAtom *pAtom) const {
     return (pAtom->GetGroupCharge() < -0.001);
   }
@@ -771,7 +773,7 @@ public:
 // Is atom the central carbon in a guanidinium group ?
 // Checks for cationic sp2/arom carbon
 // DM 27 Jan 2000 - also check is acyclic
-class isAtomGuanidiniumCarbon : public std::unary_function<RbtAtom *, bool> {
+class isAtomGuanidiniumCarbon : public std::function<bool(RbtAtom *)> {
   Rbt::isAtomicNo_eq bIsCarbon;
   Rbt::isAtomCationic bIsCationic;
   Rbt::isPiAtom bIsPi;
@@ -788,7 +790,7 @@ public:
 // DM 24 Jan 2001
 // Checks for common metal ions by atomic number
 // DM 19 Oct 2001 - extend to all common metals (Na,Mg,K->Zn)
-class isAtomMetal : public std::unary_function<RbtAtom *, bool> {
+class isAtomMetal : public std::function<bool(RbtAtom *)> {
 public:
   RBTDLL_EXPORT explicit isAtomMetal();
   RBTDLL_EXPORT bool operator()(const RbtAtom *pAtom) const;
@@ -796,7 +798,7 @@ public:
 
 // DM 21 Jul 1999 Is atom lipophilic ?
 // DM 16 May 2003 Total rewrite to be much more comprehensive
-class isAtomLipophilic : public std::unary_function<RbtAtom *, bool> {
+class isAtomLipophilic : public std::function<bool(RbtAtom *)> {
   Rbt::isAtomIonic isIonic;
   Rbt::isAtomHBondDonor isHBD;
   Rbt::isAtomHBondAcceptor isHBA;
@@ -819,7 +821,7 @@ public:
 // First constructor checks total coordination number
 // Other constructors check atomic number, force field type and hybridisation
 // state coordination numbers
-class isCoordinationNumber_eq : public std::unary_function<RbtAtom *, bool> {
+class isCoordinationNumber_eq : public std::function<bool(RbtAtom *)> {
   enum {
     TOTAL,
     ATNO,
@@ -841,8 +843,8 @@ public:
       : eCNType(ATNO), n(nn), atNo(nAt), ffType(""),
         hybrid(RbtAtom::UNDEFINED) {}
   // Force field type coordination number
-  explicit isCoordinationNumber_eq(unsigned int nn, const std::string &strType)
-      : eCNType(FFTYPE), n(nn), atNo(0), ffType(strType),
+  explicit isCoordinationNumber_eq(unsigned int nn, std::string strType)
+      : eCNType(FFTYPE), n(nn), atNo(0), ffType(std::move(strType)),
         hybrid(RbtAtom::UNDEFINED) {}
   // Hybridisation state coordination number
   explicit isCoordinationNumber_eq(unsigned int nn,
@@ -918,7 +920,7 @@ inline double AccumAtomicMass(double val, RbtAtom *pAtom) {
 }
 
 // DM 11 Nov 1999 - Accumulate mass weighted coords (for use by std::accumulate)
-inline RbtCoord AccumMassWeightedCoords(RbtCoord val, RbtAtom *pAtom) {
+inline RbtCoord AccumMassWeightedCoords(const RbtCoord &val, RbtAtom *pAtom) {
   return val + pAtom->GetAtomicMass() * pAtom->GetCoords();
 }
 
@@ -978,7 +980,7 @@ public:
 // Invert the atom selection flag
 class InvertSelectAtom {
 public:
-  explicit InvertSelectAtom() {}
+  explicit InvertSelectAtom() = default;
   void operator()(RbtAtom *pAtom) { pAtom->InvertSelectionFlag(); }
 };
 
@@ -986,7 +988,7 @@ public:
 // SelectionFlag = true)
 class SelectFlexAtoms {
 public:
-  explicit SelectFlexAtoms() {}
+  explicit SelectFlexAtoms() = default;
   void operator()(RbtAtom *pAtom);
 };
 
@@ -1149,21 +1151,21 @@ inline RbtAtomList GetAtomListWithAtomicNo_eq(const RbtAtomList &atomList,
 // Atoms with FFType = strFFType
 inline unsigned int GetNumAtomsWithFFType_eq(const RbtAtomList &atomList,
                                              std::string strFFType) {
-  return Rbt::GetNumAtoms(atomList, Rbt::isFFType_eq(strFFType));
+  return Rbt::GetNumAtoms(atomList, Rbt::isFFType_eq(std::move(strFFType)));
 }
 inline RbtAtomList GetAtomListWithFFType_eq(const RbtAtomList &atomList,
                                             std::string strFFType) {
-  return Rbt::GetAtomList(atomList, Rbt::isFFType_eq(strFFType));
+  return Rbt::GetAtomList(atomList, Rbt::isFFType_eq(std::move(strFFType)));
 }
 
 // Atoms with AtomName = strAtomName
 inline unsigned int GetNumAtomsWithAtomName_eq(const RbtAtomList &atomList,
                                                std::string strAtomName) {
-  return Rbt::GetNumAtoms(atomList, Rbt::isAtomName_eq(strAtomName));
+  return Rbt::GetNumAtoms(atomList, Rbt::isAtomName_eq(std::move(strAtomName)));
 }
 inline RbtAtomList GetAtomListWithAtomName_eq(const RbtAtomList &atomList,
                                               std::string strAtomName) {
-  return Rbt::GetAtomList(atomList, Rbt::isAtomName_eq(strAtomName));
+  return Rbt::GetAtomList(atomList, Rbt::isAtomName_eq(std::move(strAtomName)));
 }
 
 // DM 1 Feb 1999
